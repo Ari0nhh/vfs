@@ -28,20 +28,35 @@ namespace vfs {
 	};
 	
 	interface IFile : public IEntity {
+		virtual size_t size() = 0;
+		virtual size_t read(void*, const size_t&) = 0;
+		virtual size_t write(void*, const size_t&) = 0;
 		virtual ~IFile() = default;
 	public:
 		using Ptr = std::shared_ptr<IFile>;
 	};
 
 	interface IFileSystem {
+		virtual IEntity::Ptr create(const std::filesystem::path&, const bool&) = 0;
+		virtual IEntity::Ptr open(const std::filesystem::path&) = 0;
+		virtual bool copy(const std::filesystem::path&, const std::filesystem::path&) = 0;
+		virtual bool move(const std::filesystem::path&, const std::filesystem::path&) = 0;
+		virtual bool remove(const std::filesystem::path&) = 0;
 		virtual ~IFileSystem() = default;
 	public:
 		using Ptr = std::shared_ptr<IFileSystem>;
 	};
 
-	interface IVolume {
-		virtual ~IVolume() = default;
+	enum Kind { fsNative = 0, fsMemory, fsZip };
+	
+	interface IVolume : public IFileSystem {
 	public:
 		using Ptr = std::shared_ptr<IVolume>;
+		using Options = std::map<std::string, std::string>;
+	public:
+		virtual bool mount(const std::filesystem::path&, const Kind&, const Options&) = 0;
+		virtual bool unmount(const std::filesystem::path&) = 0;
+		virtual ~IVolume() = default;
+	
 	};
 }
