@@ -8,6 +8,7 @@
 #include <functional>
 #include <map>
 #include <mutex>
+#include <optional>
 
 #ifndef interface
 #define interface struct
@@ -31,6 +32,7 @@ namespace vfs {
 		virtual size_t size() = 0;
 		virtual size_t read(void*, const size_t&) = 0;
 		virtual size_t write(void*, const size_t&) = 0;
+		virtual bool copy(IFile::Ptr) = 0;
 		virtual ~IFile() = default;
 	public:
 		using Ptr = std::shared_ptr<IFile>;
@@ -47,7 +49,7 @@ namespace vfs {
 		using Ptr = std::shared_ptr<IFileSystem>;
 	};
 
-	enum Kind { fsNative = 0, fsMemory, fsZip };
+	enum class Kind { fsNative = 0, fsMemory, fsZip };
 	
 	interface IVolume : public IFileSystem {
 	public:
@@ -59,4 +61,6 @@ namespace vfs {
 		virtual ~IVolume() = default;
 	
 	};
+
+	IVolume::Ptr create();
 }
