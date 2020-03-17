@@ -1,5 +1,5 @@
 #pragma once
-#include "../../include/vfs.h"
+#include "vfs.h"
 
 namespace vfs {
 	class Volume : public IVolume {

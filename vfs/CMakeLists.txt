@@ -9,7 +9,13 @@ add_library (vfs SHARED
 	"include/vfs.h"
 	"src/volume/volume.h"
 	"src/volume/volume.cpp"
+    "src/filesystem/native.h"
+    "src/filesystem/native.cpp"
+    "src/exceptions/exceptions.h"
+    "src/exceptions/exceptions.cpp"
 )
+
+target_include_directories(vfs PRIVATE include)
 
 if(MSVC)
   target_compile_options(vfs PRIVATE /W4 /WX)

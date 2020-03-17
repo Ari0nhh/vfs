@@ -21,7 +21,7 @@ namespace vfs {
 		using It = std::vector<std::filesystem::path>::const_iterator;
 	public:
 		virtual bool is_dir() = 0;
-		virtual std::filesystem::path name();
+		virtual std::filesystem::path name() = 0;
 		virtual It begin() = 0;
 		virtual It end() = 0;
 		virtual bool empty() = 0;
