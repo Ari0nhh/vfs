@@ -28,14 +28,16 @@ namespace vfs {
 		virtual ~IEntity() = default;
 	};
 	
-	interface IFile : public IEntity {
-		virtual size_t size() = 0;
-		virtual size_t read(void*, const size_t&) = 0;
-		virtual size_t write(void*, const size_t&) = 0;
-		virtual bool copy(IFile::Ptr) = 0;
-		virtual ~IFile() = default;
+	interface IFile : public virtual IEntity {
 	public:
 		using Ptr = std::shared_ptr<IFile>;
+	public:
+		virtual size_t size() = 0;
+		virtual size_t read(char*, const size_t&, const size_t&) = 0;
+		virtual size_t write(char*, const size_t&, const size_t&) = 0;
+		virtual bool copy(const IFile::Ptr&) = 0;
+		virtual bool seek(const size_t&) = 0;
+		virtual ~IFile() = default;
 	};
 
 	interface IFileSystem {

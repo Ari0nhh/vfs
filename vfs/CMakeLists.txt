@@ -5,20 +5,22 @@ project ("vfs" VERSION 1.0 DESCRIPTION "Simple virtual filesystem library")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library (vfs SHARED 
-	"include/vfs.h"
-	"src/volume/volume.h"
-	"src/volume/volume.cpp"
-    "src/filesystem/native.h"
-    "src/filesystem/native.cpp"
-    "src/exceptions/exceptions.h"
-    "src/exceptions/exceptions.cpp"
+set(SOURCES 
+	include/vfs.h
+	src/volume/volume.h
+	src/volume/volume.cpp
+    src/filesystem/native.h
+    src/filesystem/native.cpp
+    src/exceptions/exceptions.h
+    src/exceptions/exceptions.cpp
 )
+
+add_library (vfs STATIC ${SOURCES})
 
 target_include_directories(vfs PRIVATE include)
 
 if(MSVC)
-  target_compile_options(vfs PRIVATE /W4 /WX)
+  target_compile_options(vfs PRIVATE /W4 /WX /wd4250)
 else()
   target_compile_options(vfs PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
