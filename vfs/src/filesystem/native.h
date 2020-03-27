@@ -23,11 +23,27 @@ namespace vfs {
 			};
 
 			class File : public virtual Entity, public virtual vfs::IFile {
+			public:
+				explicit File(const std::filesystem::path& root, const std::filesystem::path& path) : Entity(root, path) {};
+				explicit File(const std::filesystem::path& root, const std::filesystem::path& path, const bool& dir) : Entity(root, path, dir) {};
 			protected: //IFile
                 size_t size() override;
                 size_t read(char* buffer, const size_t& size, const size_t& pos) override;
                 size_t write(char* buffer, const size_t& size, const size_t& pos) override;
                 bool copy(const vfs::IFile::Ptr& file) override;
+			};
+
+			class FileSystem : public IFileSystem {
+			public:
+				explicit FileSystem(const Options& opt);
+			protected: //IFileSystem
+                IEntity::Ptr create(const std::filesystem::path& path, const bool& folder) override;
+                IEntity::Ptr open(const std::filesystem::path& path) override;
+                bool copy(const std::filesystem::path& src, const std::filesystem::path& dst) override;
+                bool move(const std::filesystem::path& src, const std::filesystem::path& dst) override;
+                bool remove(const std::filesystem::path& path) override;
+			private:
+				std::filesystem::path m_root;
 			};
 
 		}

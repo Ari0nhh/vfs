@@ -36,7 +36,6 @@ namespace vfs {
 		virtual size_t read(char*, const size_t&, const size_t&) = 0;
 		virtual size_t write(char*, const size_t&, const size_t&) = 0;
 		virtual bool copy(const IFile::Ptr&) = 0;
-		virtual bool seek(const size_t&) = 0;
 		virtual ~IFile() = default;
 	};
 
@@ -49,14 +48,14 @@ namespace vfs {
 		virtual ~IFileSystem() = default;
 	public:
 		using Ptr = std::shared_ptr<IFileSystem>;
+		using Options = std::map<std::string, std::string>;
 	};
 
-	enum class Kind { fsNative = 0, fsMemory, fsZip };
+	enum class Kind { Native = 0, Memory, Zip };
 	
 	interface IVolume : public IFileSystem {
 	public:
 		using Ptr = std::shared_ptr<IVolume>;
-		using Options = std::map<std::string, std::string>;
 	public:
 		virtual bool mount(const std::filesystem::path&, const Kind&, const Options&) = 0;
 		virtual bool unmount(const std::filesystem::path&) = 0;

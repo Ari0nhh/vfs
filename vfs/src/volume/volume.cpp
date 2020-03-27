@@ -1,4 +1,5 @@
 #include "volume.h"
+#include "../filesystem/native.h"
 
 namespace vfs {
 	IVolume::Ptr create() {
@@ -193,7 +194,12 @@ int vfs::Volume::distance(const std::filesystem::path& root, const std::filesyst
 	return int(path_len - root_len);
 }
 
-vfs::IFileSystem::Ptr vfs::Volume::make(const Kind&, const Options&)
+vfs::IFileSystem::Ptr vfs::Volume::make(const Kind& kind, const Options& opt)
 {
-	return nullptr;
+	switch (kind) {
+	case vfs::Kind::Native:
+		return std::make_shared<vfs::filesystem::native::FileSystem>(opt);
+	default:
+		return nullptr;
+	}
 }

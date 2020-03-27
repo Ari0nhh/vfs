@@ -19,5 +19,10 @@ namespace vfs {
 			explicit FileOperationFault(const std::filesystem::path& name, const std::string& what) : 
 				std::runtime_error("File operation failed on " + name.string() + " :" + what ) {}
 		};
+
+		class FileSystemInvalidOptions : public std::runtime_error {
+		public:
+			explicit FileSystemInvalidOptions(const std::string& what) : std::runtime_error(what) {}
+		};
 	}
 }

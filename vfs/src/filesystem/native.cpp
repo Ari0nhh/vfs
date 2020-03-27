@@ -117,3 +117,70 @@ bool vfs::filesystem::native::File::copy(const vfs::IFile::Ptr& file)
 
 	return false;
 }
+
+vfs::filesystem::native::FileSystem::FileSystem(const Options& opt)
+{
+	auto it = opt.find("native-root");
+	if (opt.end() == it)
+		throw vfs::exception::FileSystemInvalidOptions("Filesystem root not set");
+
+	m_root = it->second;
+}
+
+vfs::IEntity::Ptr vfs::filesystem::native::FileSystem::create(const std::filesystem::path& path, const bool& folder)
+{
+	return folder ? std::make_shared<Entity>(m_root, path) : std::make_shared<File>(m_root, path);
+}
+
+vfs::IEntity::Ptr vfs::filesystem::native::FileSystem::open(const std::filesystem::path& path)
+{
+	auto fp = m_root / path;
+	if (!std::filesystem::exists(fp))
+		throw vfs::exception::EntityNotExist(path);
+
+	if (std::filesystem::is_directory(fp))
+		return std::make_shared<Entity>(m_root, path);
+
+	return std::make_shared<File>(m_root, path);
+}
+
+bool vfs::filesystem::native::FileSystem::copy(const std::filesystem::path& src, const std::filesystem::path& dst)
+{
+	try {
+		auto fsrc = m_root / src;
+		auto fdst = m_root / dst;
+
+		if (!std::filesystem::exists(fsrc))
+			return false;
+
+		std::filesystem::copy_file(fsrc, fdst, std::filesystem::copy_options::overwrite_existing);
+		return true;
+	}
+	catch (const std::exception&) {}
+
+	return false;
+}
+
+bool vfs::filesystem::native::FileSystem::move(const std::filesystem::path& src, const std::filesystem::path& dst)
+{
+	try {
+		if (!copy_file(src, dst))
+			return false;
+		
+		std::filesystem::remove(m_root / src);
+		return true;
+	}
+	catch (const std::exception&) {}
+	
+	return false;
+}
+
+bool vfs::filesystem::native::FileSystem::remove(const std::filesystem::path& path)
+{
+	try {
+        std::filesystem::remove(m_root / path);
+        return true;
+	}
+	catch (const std::exception&) {}
+	return false;
+}
